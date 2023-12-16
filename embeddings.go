@@ -146,10 +146,10 @@ func (e *Embedding) DotProduct(other *Embedding) (float32, error) {
 
 // EmbeddingResponse is the response from a Create embeddings request.
 type EmbeddingResponse struct {
-	Object string         `json:"object"`
-	Data   []Embedding    `json:"data"`
-	Model  EmbeddingModel `json:"model"`
-	Usage  Usage          `json:"usage"`
+	Object string      `json:"object"`
+	Data   []Embedding `json:"data"`
+	Model  string      `json:"model"`
+	Usage  Usage       `json:"usage"`
 
 	httpHeader
 }
@@ -182,7 +182,7 @@ type Base64Embedding struct {
 type EmbeddingResponseBase64 struct {
 	Object string            `json:"object"`
 	Data   []Base64Embedding `json:"data"`
-	Model  EmbeddingModel    `json:"model"`
+	Model  string            `json:"model"`
 	Usage  Usage             `json:"usage"`
 
 	httpHeader
@@ -230,7 +230,7 @@ const (
 
 type EmbeddingRequest struct {
 	Input          any                     `json:"input"`
-	Model          EmbeddingModel          `json:"model"`
+	Model          string                  `json:"model"`
 	User           string                  `json:"user"`
 	EncodingFormat EmbeddingEncodingFormat `json:"encoding_format,omitempty"`
 }
@@ -250,7 +250,7 @@ type EmbeddingRequestStrings struct {
 	Input []string `json:"input"`
 	// ID of the model to use. You can use the List models API to see all of your available models,
 	// or see our Model overview for descriptions of them.
-	Model EmbeddingModel `json:"model"`
+	Model string `json:"model"`
 	// A unique identifier representing your end-user, which will help OpenAI to monitor and detect abuse.
 	User string `json:"user"`
 	// EmbeddingEncodingFormat is the format of the embeddings data.
@@ -278,7 +278,7 @@ type EmbeddingRequestTokens struct {
 	Input [][]int `json:"input"`
 	// ID of the model to use. You can use the List models API to see all of your available models,
 	// or see our Model overview for descriptions of them.
-	Model EmbeddingModel `json:"model"`
+	Model string `json:"model"`
 	// A unique identifier representing your end-user, which will help OpenAI to monitor and detect abuse.
 	User string `json:"user"`
 	// EmbeddingEncodingFormat is the format of the embeddings data.
@@ -306,7 +306,7 @@ func (c *Client) CreateEmbeddings(
 	conv EmbeddingRequestConverter,
 ) (res EmbeddingResponse, err error) {
 	baseReq := conv.Convert()
-	req, err := c.newRequest(ctx, http.MethodPost, c.fullURL("/embeddings", baseReq.Model.String()), withBody(baseReq))
+	req, err := c.newRequest(ctx, http.MethodPost, c.fullURL("/embeddings", baseReq.Model), withBody(baseReq))
 	if err != nil {
 		return
 	}
